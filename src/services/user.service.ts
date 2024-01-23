@@ -11,18 +11,18 @@ export class UserService {
   };
 
   public async readUsers(queryParams: any): Promise<User[]> {
-    const { name, email, phoneNumber } = queryParams;
+    const { term } = queryParams;
 
     const baseQuery = `SELECT *
                        FROM users`;
 
-    if (!name && !email && !phoneNumber) {
+    if (!term) {
       const users: User[] = await userRepo.query(baseQuery);
 
       return users;
     }
 
-    const completeQuery = this.buildQueryWithFilters(baseQuery, name, email, phoneNumber);
+    const completeQuery = this.buildQueryWithFilters(baseQuery, term);
 
     const users: User[] = await userRepo.query(completeQuery);
 
@@ -40,24 +40,16 @@ export class UserService {
     return user;
   };
 
-  private buildQueryWithFilters(baseQuery: string, name: string, email: string, phoneNumber: string) {
+  private buildQueryWithFilters(baseQuery: string, term: string) {
     const query = `${baseQuery} WHERE`;
 
     const conditions: string[] = [];
 
-    if (name) {
-      conditions.push(`name iLike '%${name}%'`);
-    }
+    conditions.push(`name iLike '%${term}%'`);
+    conditions.push(`email iLike '%${term}%'`);
+    conditions.push(`"phoneNumber" iLike '%${term}%'`);
 
-    if (email) {
-      conditions.push(`email iLike '%${email}%'`);
-    }
-
-    if (phoneNumber) {
-      conditions.push(`"phoneNumber" iLike '%${phoneNumber}%'`);
-    }
-
-    return `${query} ${conditions.join(' AND ')}`;
+    return `${query} ${conditions.join(' OR ')}`;
   }
 }
 
