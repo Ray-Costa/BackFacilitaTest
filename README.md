@@ -6,13 +6,13 @@ Antes de executar o projeto, é necessário configurar o ambiente. Siga os passo
 
 ### Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone git@github.com:Ray-Costa/BackFacilitaTest.git
 ```
 
 ### Instale as dependências:
 
 ```bash
-cd nome-do-repositorio
+cd BackFacilitaTest
 npm install
 ```
 
