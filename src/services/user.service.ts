@@ -46,15 +46,15 @@ export class UserService {
     const conditions: string[] = [];
 
     if (name) {
-      conditions.push(`UPPER(name) = '${name.toUpperCase()}'`);
+      conditions.push(`name iLike '%${name}%'`);
     }
 
     if (email) {
-      conditions.push(`UPPER(email) = '${email.toUpperCase()}'`);
+      conditions.push(`email iLike '%${email}%'`);
     }
 
     if (phoneNumber) {
-      conditions.push(`phoneNumber = '${phoneNumber}'`);
+      conditions.push(`"phoneNumber" iLike '%${phoneNumber}%'`);
     }
 
     return `${query} ${conditions.join(' AND ')}`;

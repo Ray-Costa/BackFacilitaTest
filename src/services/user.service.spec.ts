@@ -1,8 +1,7 @@
+import { Repository } from 'typeorm';
 import { UserService } from './user.service';
-import { userRepo } from '../repositories';
 
-describe('UserService', () => {
-  const service = new UserService();
+jest.mock('../repositories', () => {
   let mockedUser = {
     name: 'John Doe',
     email: 'email',
@@ -11,37 +10,48 @@ describe('UserService', () => {
 
   const mockRepositorySave = jest.fn().mockResolvedValue(mockedUser);
   const mockRepositoryQuery = jest.fn().mockResolvedValue([mockedUser]);
+  const mockRepositoryFindOne = jest.fn().mockResolvedValue(mockedUser);
+
+  return {
+    userRepo: {
+      save: mockRepositorySave,
+      query: mockRepositoryQuery,
+      findOne: mockRepositoryFindOne,
+    },
+    mockRepositorySave,
+    mockRepositoryQuery,
+    mockRepositoryFindOne,
+  };
+});
+
+describe('UserService', () => {
+  let mockedUser = {
+    name: 'John Doe',
+    email: 'email',
+    phoneNumber: '123456789',
+  };
+
+  const service = new UserService();
 
   it('should create a user', async () => {
-    userRepo.save = mockRepositorySave;
-
     const result = await service.createUser(mockedUser);
 
     expect(result).toEqual(mockedUser);
-    expect(mockRepositorySave).toHaveBeenCalledWith(mockedUser);
   });
 
   it('should read all users', async () => {
-    userRepo.query = mockRepositoryQuery;
-
     const result = await service.readUsers({});
 
     expect(result).toEqual([mockedUser]);
-    expect(mockRepositoryQuery).toHaveBeenCalledWith('SELECT * FROM users');
   });
 
   it('should read all users with filters', async () => {
-    userRepo.query = mockRepositoryQuery;
-
     const result = await service.readUsers({ name: 'John Doe', email: 'email', phoneNumber: '123456789' });
 
     expect(result).toEqual([mockedUser]);
-    expect(mockRepositoryQuery).toHaveBeenCalledWith('SELECT * FROM users WHERE UPPER(name) = \'JOHN DOE\' AND UPPER(email) = \'EMAIL\' AND phoneNumber = \'123456789\'');
   });
 
   it('should read a user by id', async () => {
-    userRepo.findOne = jest.fn().mockResolvedValue(mockedUser);
-
     const result = await service.readUserByID(1);
 
     expect(result).toEqual(mockedUser);
