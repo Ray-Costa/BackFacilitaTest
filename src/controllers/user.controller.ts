@@ -2,7 +2,6 @@ import { UserService } from '../services/user.service';
 import { Request, Response } from 'express';
 import User from '../entities/User.entity';
 
-
 export class UserController {
   constructor(
     private usersServices: UserService
@@ -26,5 +25,11 @@ export class UserController {
     const user: User= await this.usersServices.readUserByID(Number(req.params.userId))
 
     return res.status(200).json(user)
+  }
+
+  public async calculateRoute(_req: Request, res: Response): Promise<Response> {
+    const route = await this.usersServices.calculateRoute()
+
+    return res.status(200).json(route)
   }
 }

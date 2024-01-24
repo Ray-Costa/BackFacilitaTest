@@ -9,4 +9,3 @@ const userController = new UserController(new UserService());
 userRouter.post('/', (req, res) => userController.createUser(req, res));
 userRouter.get('/', (req, res) => userController.readUsers(req, res));
 userRouter.get('/:userId', (req, res) => userController.readUserById(req, res));
-
